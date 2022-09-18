@@ -17,12 +17,17 @@ function Remove-DeviceFromCollections ($device){
         Remove-DeviceFromCollections -device "Laptop1"
     #>
 
-    $deviceObject = (Get-CMDevice | Where-Object { $_.Name -eq $($deviceName) }).Name
-    $deviceResourceID = (Get-CMDevice -Name $deviceObject).ResourceID
+    Try {
+        $deviceObject = (Get-CMDevice | Where-Object {$_.Name -eq $($device)})
+      }
+      Catch {
+        Throw "Could not find a device with the name $($device)"
+      }
+      $deviceResourceID = (Get-CMDevice -Name $deviceObject.Name).ResourceID
 
     # Get collections with a direct membership rule for the device
-    $collections = Get-CMDeviceCollection | Where-Object {$_.CollectionRules -eq $deviceObject}
-    If(-not $collections){
+    $collections = Get-CMDeviceCollection | Where-Object {$_.CollectionRules -like "*$($deviceObject.Name)*"}
+    If($collections.Length -le 0){
         Write-Host "This device is not a member of any collections!" -ForegroundColor Green
         Return
     }
