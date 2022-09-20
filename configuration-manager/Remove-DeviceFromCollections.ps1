@@ -27,7 +27,7 @@ function Remove-DeviceFromCollections ($device){
 
     # Get collections with a direct membership rule for the device
     $collections = Get-CMDeviceCollection | Where-Object {$_.CollectionRules -like "*$($deviceObject.Name)*"}
-    If($collections.Length -le 0){
+    If(-not $collections){
         Write-Host "This device is not a member of any collections!" -ForegroundColor Green
         Return
     }
