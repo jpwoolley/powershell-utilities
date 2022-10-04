@@ -12,6 +12,8 @@ If(Test-Path "C:\Program Files (x86)"){
     $Paths += "HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
 }
 
+$Keys = $Paths | ForEach-Object {Get-ChildItem "Registry::$($_)"}
+
 $KeysWithElegibleStrings = $Keys | Where-Object {((Get-ItemProperty -Path "Registry::$($_.Name)").UninstallString) -or ((Get-ItemProperty -Path "Registry::$($_.Name)").ImagePath)}
 
 $BadUninstallStrings = @()
