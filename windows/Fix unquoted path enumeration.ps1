@@ -5,10 +5,7 @@
 # $BadUninstallStrings = $Keys | Where-Object {(Get-ItemProperty -Path "Registry::$($_.Name)").UninstallString} | Where-Object {(Get-ItemPropertyValue -Path "Registry::$($_.Name)" -Name "UninstallString") -Match '^((\w\:)|(%[-\w_()]+%))\\'} | Where-Object {(Get-ItemPropertyValue -Path "Registry::$($_.Name)" -Name "UninstallString") -NotMatch 'MsiExec(\.exe)?'} | Where-Object {(Get-ItemPropertyValue -Path "Registry::$($_.Name)" -Name "UninstallString") -Like '* *.exe*'}
 # $BadImagePathStrings = $Keys | Where-Object {((Get-ItemProperty -Path "Registry::$($_.Name)").ImagePath)} | Where-Object {(Get-ItemPropertyValue -Path "Registry::$($_.Name)" -Name "ImagePath") -Match '^((\w\:)|(%[-\w_()]+%))\\'} | Where-Object {(Get-ItemPropertyValue -Path "Registry::$($_.Name)" -Name "ImagePath") -NotMatch 'MsiExec(\.exe)?'} | Where-Object {(Get-ItemPropertyValue -Path "Registry::$($_.Name)" -Name "ImagePath") -Like '* *.exe*'}
 
-# Main
-If((($null -eq $BadUninstallStrings) -and ($null -eq $BadImagePathStrings))){
-    Write-Host "Installed"
-}
+## Main
 # Places to look for bad strings
 $Paths = @(
     "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
