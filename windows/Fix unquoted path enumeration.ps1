@@ -23,7 +23,6 @@ $BadUninstallStrings = $Keys | Where-Object {(Get-ItemProperty -Path "Registry::
 $BadImagePathStrings = $Keys | Where-Object {((Get-ItemProperty -Path "Registry::$($_.Name)").ImagePath)} | Where-Object {(Get-ItemPropertyValue -Path "Registry::$($_.Name)" -Name "ImagePath") -Match '^((\w\:)|(%[-\w_()]+%))\\'} | Where-Object {(Get-ItemPropertyValue -Path "Registry::$($_.Name)" -Name "ImagePath") -NotMatch 'MsiExec(\.exe)?'} | Where-Object {(Get-ItemPropertyValue -Path "Registry::$($_.Name)" -Name "ImagePath") -Like '* *.exe*'}
 # Fix bad uninstall strings, if any
 If(($null -ne $BadUninstallStrings) -and ($BadUninstallStrings.Length -gt 0)){
-
     ForEach($Item in $BadUninstallStrings){
         $BadString = Get-ItemPropertyValue -Path "Registry::$($Item.Name)" -Name "UninstallString"
         $BadString1 = ($BadString -split ".exe ")[0]
@@ -35,20 +34,18 @@ If(($null -ne $BadUninstallStrings) -and ($BadUninstallStrings.Length -gt 0)){
         }
         Set-ItemProperty -Path "Registry::$($Item.Name)" -Name "UninstallString" -Value $GoodString 
     }
-
 }
 # Fix bad image path strings, if any
 If(($null -ne $BadImagePathStrings) -and ($BadImagePathStrings.Length -gt 0)){
-
-}
-ForEach($Item in $BadImagePathStrings){
-    $BadString = Get-ItemPropertyValue -Path "Registry::$($Item.Name)" -Name "ImagePath"
-    $BadString1 = ($BadString -split ".exe ")[0]
-    $BadString2 = ($BadString -split ".exe ")[1]
-    If($null -eq $BadString2){
-        $GoodString = """$($BadString1)"""
-    } else {
-        $GoodString = """$($BadString1).exe"" $($BadString2)"
+    ForEach($Item in $BadImagePathStrings){
+        $BadString = Get-ItemPropertyValue -Path "Registry::$($Item.Name)" -Name "ImagePath"
+        $BadString1 = ($BadString -split ".exe ")[0]
+        $BadString2 = ($BadString -split ".exe ")[1]
+        If($null -eq $BadString2){
+            $GoodString = """$($BadString1)"""
+        } else {
+            $GoodString = """$($BadString1).exe"" $($BadString2)"
+        }
+        Set-ItemProperty -Path "Registry::$($Item.Name)" -Name "ImagePath" -Value $GoodString 
     }
-    Set-ItemProperty -Path "Registry::$($Item.Name)" -Name "ImagePath" -Value $GoodString 
 }
