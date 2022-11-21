@@ -5,7 +5,7 @@ function GrantPermissionToDistributionLists {
         [Parameter(Mandatory)]
         [String]
         $UserPrincipalName,
-        [Parameter(Mandatory)]
+        [Parameter()]
         [array]
         $Addresses,
         [Parameter()]
